@@ -1,0 +1,18 @@
+Body tracking
+void MainPage::InitKinect()
+{
+  KinectSensor^ sensor = KinectSensor::GetDefault();
+  sensor->Open();
+  bodyReader = sensor->BodyFrameSource->OpenReader();
+  bodyReader->FrameArrived += 
+   ref new TypedEventHandler<typename BodyFrameArrivedEventArgs^> (this,                 
+                        &MainPage::OnBodyFrameArrived);
+  bodies = ref new Platform::Collections::Vector<Body^>(6);
+}
+
+void MainPage::OnBodyFrameArrived(BodyFrameReader ^sender, BodyFrameArrivedEventArgs ^eventArgs){
+  BodyFrame ^frame = eventArgs->FrameReference->AcquireFrame();
+  if (frame != nullptr){
+	  frame->GetAndRefreshBodyData(bodies);
+  }
+}
