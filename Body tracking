@@ -1,4 +1,3 @@
-Body tracking
 void MainPage::InitKinect()
 {
   KinectSensor^ sensor = KinectSensor::GetDefault();
@@ -14,5 +13,25 @@ void MainPage::OnBodyFrameArrived(BodyFrameReader ^sender, BodyFrameArrivedEvent
   BodyFrame ^frame = eventArgs->FrameReference->AcquireFrame();
   if (frame != nullptr){
 	  frame->GetAndRefreshBodyData(bodies);
+  }
+}
+void MainPage::OnBodyFrameArrived(Platform::Object ^sender, 
+                                  BodyFrameArrivedEventArgs ^eventArgs){
+{
+  BodyFrame ^frame = eventArgs->FrameReference->AcquireFrame();
+  if (frame != nullptr)
+  {
+    frame->GetAndRefreshBodyData(bodies);	
+
+    for each (Body ^body in bodies)
+    {
+      Joint headJoint = body->Joints->Lookup(JointType::Head);
+      CameraSpacePoint headLocation = headJoint.Position;
+      TrackingState headTrackingState = headJoint.TrackingState;
+		
+      CoordinateMapper ^mapper = 
+        frame->BodyFrameSource->KinectSensor->CoordinateMapper;
+      ColorSpacePoint headPoint = mapper->MapCameraPointToColorSpace(headLocation);
+    }
   }
 }
