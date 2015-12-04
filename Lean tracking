@@ -1,0 +1,15 @@
+Lean tracking
+IBody^ body = // Gets the body frame using NUI APIs.
+
+Windows::Foundation::Point leanAmount = body->Lean;
+float x = leanAmount.X;
+float y = leanAmount.Y;
+
+if(body->LeanTrackingState == TrackingState::Tracked)
+{
+  // Do stuff with lean values.
+}
+else
+{
+  // Use values from previous frame or default values.
+}
